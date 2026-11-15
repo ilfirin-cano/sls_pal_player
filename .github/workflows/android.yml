@@ -44,6 +44,10 @@ jobs:
           mkdir -p app-src
           cat source/encoded/part*.txt | base64 --decode | xz --decompress | tar -x -C app-src
 
+      - name: Apply Kotlin compatibility fix
+        working-directory: app-src
+        run: sed -i 's/\.albumList?\.album\.orEmpty()/\.albumList2?\.album\.orEmpty()/' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeRepository.kt
+
       - name: Run unit tests
         working-directory: app-src
         run: gradle --no-daemon testDebugUnitTest
