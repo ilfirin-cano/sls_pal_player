@@ -1,0 +1,65 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/android.yml'
+      - 'source/**'
+      - 'README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Extract Android project
+        run: |
+          mkdir -p app-src
+          tar -xJf source/soulseek-player-source.tar.xz -C app-src
+
+      - name: Run unit tests
+        working-directory: app-src
+        run: gradle --no-daemon testDebugUnitTest
+
+      - name: Build debug APK
+        working-directory: app-src
+        run: gradle --no-daemon assembleDebug
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soulseek-player-debug-apk
+          path: app-src/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soulseek-player-test-reports
+          path: app-src/app/build/reports/tests/
+          if-no-files-found: ignore
+          retention-days: 14
