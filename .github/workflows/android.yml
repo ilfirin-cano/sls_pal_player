@@ -56,6 +56,10 @@ jobs:
         working-directory: app-src
         run: python3 ../patches/fix_ui.py
 
+      - name: Wire server connectivity and library sync
+        working-directory: app-src
+        run: python3 ../patches/wire_server_connections.py
+
       - name: Upload reconstructed source for inspection
         uses: actions/upload-artifact@v4
         with:
