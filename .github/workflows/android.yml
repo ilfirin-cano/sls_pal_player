@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/android.yml'
       - 'source/encoded/**'
+      - 'patches/**'
       - 'README.md'
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
@@ -50,6 +51,9 @@ jobs:
           sed -i 's/\.albumList?\.album\.orEmpty()/\.albumList2?\.album\.orEmpty()/' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeRepository.kt
           sed -i 's/okhttp3\.HttpUrl\.get(base)/base.toHttpUrl()/' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeStreamDataSource.kt
           sed -i '/import okhttp3.Request/a import okhttp3.HttpUrl.Companion.toHttpUrl' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeStreamDataSource.kt
+
+      - name: Fix settings interactions and screen scrolling
+        run: python3 patches/fix_ui.py
 
       - name: Upload reconstructed source for inspection
         uses: actions/upload-artifact@v4
