@@ -20,3 +20,7 @@ GitHub Actions reconstructs the source archive, runs JVM unit tests and builds a
 ## Status
 
 This is an early implementation baseline, not a release-ready player. The CI result is the source of truth for whether the current revision compiles and its tests pass. No release APK is claimed until a successful build is produced.
+
+## Local build
+
+Requires JDK 17, Android SDK 35 and Gradle 8.13. After extracting the source archive, run `gradle testDebugUnitTest assembleDebug` from the project root. The debug APK is written to `app/build/outputs/apk/debug/`.
