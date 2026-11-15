@@ -119,3 +119,8 @@ s=s.replace('''                store.save(NavidromeCredentials(serverUrl, userna
                 prefs.edit()''')
 # queue dialog persist normalized and refresh field text via same state already
 p.write_text(s)
+
+# Allow user-configured HTTP endpoints for self-hosted LAN servers. HTTPS remains recommended.
+manifest = Path("app/src/main/AndroidManifest.xml")
+m = manifest.read_text().replace('android:usesCleartextTraffic="false"', 'android:usesCleartextTraffic="true"')
+manifest.write_text(m)
