@@ -51,6 +51,14 @@ jobs:
           sed -i 's/okhttp3\.HttpUrl\.get(base)/base.toHttpUrl()/' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeStreamDataSource.kt
           sed -i '/import okhttp3.Request/a import okhttp3.HttpUrl.Companion.toHttpUrl' app/src/main/java/dev/soulseek/player/data/navidrome/NavidromeStreamDataSource.kt
 
+      - name: Upload reconstructed source for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: soulseek-player-reconstructed-source
+          path: app-src/
+          if-no-files-found: error
+          retention-days: 3
+
       - name: Run unit tests
         working-directory: app-src
         run: gradle --no-daemon testDebugUnitTest
